@@ -51,7 +51,9 @@ To compile the example:
 Then you can run
 
     % yarn build
+
 or
+
     % npm run build
 
 At that point, you should see the file `src/Index.bs.js` with the following output:
