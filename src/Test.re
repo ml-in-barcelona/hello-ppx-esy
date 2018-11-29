@@ -1,7 +1,6 @@
 open Migrate_parsetree;
 open Ast_406;
 open Ast_mapper;
-open Asttypes;
 open Parsetree;
 
 let expr = (mapper, e) =>
