@@ -1,4 +1,4 @@
-# hello-jsoo-esy
+# hello-ppx-esy
 
 A project that includes the minimum configuration for a [ppx](https://blog.hackages.io/reasonml-ppx-8ecd663d5640) project using Reason and [Esy](https://github.com/esy-ocaml/esy).
 
