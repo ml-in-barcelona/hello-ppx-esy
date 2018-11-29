@@ -1,6 +1,6 @@
 _esy
 .merlin
-node_modules/
+node_modules
 _build
 _release
 *.byte
