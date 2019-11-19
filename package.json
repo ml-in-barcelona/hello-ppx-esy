@@ -22,7 +22,7 @@
     "@opam/ocaml-migrate-parsetree": "^1.0.11",
     "@esy-ocaml/reason": "*",
     "refmterr": "*",
-    "ocaml": "~4.2.3"
+    "ocaml": "~4.6.1000"
   },
   "resolutions": {
     "@esy-ocaml/esy-installer": "0.0.1",
@@ -31,6 +31,6 @@
   },
   "devDependencies": {
     "@esy-ocaml/merlin": "*",
-    "ocaml": "~4.2.3"
+    "ocaml": "~4.6.1000"
   }
 }
