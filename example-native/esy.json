@@ -1,0 +1,22 @@
+{
+  "name": "hello-ppx-esy-native-example",
+  "version": "0.0.1",
+  "license": "MIT",
+  "esy": {
+    "build": [
+      "dune build -p my_native_app"
+    ]
+  },
+  "dependencies": {
+    "hello-ppx-esy": "*",
+    "ocaml": "~4.6.1000",
+    "@opam/dune": "*",
+    "@opam/reason": "*"
+  },
+  "devDependencies": {
+    "@opam/merlin": "*"
+  },
+  "resolutions": {
+    "hello-ppx-esy": "link-dev:.."
+  }
+}
