@@ -1,9 +1,11 @@
+# Using `ppx_42`: BuckleScript example
+
 You can see an example of usage in a BuckleScript project in this folder.
 The most relevant point is the `ppx-flags` in `bsconfig.json`, that is pointing to the ppx executable:
 
 ```
   "ppx-flags": [
-    "../_esy/default/build/default/.ppx/my_ppx_lib/ppx.exe --as-ppx"
+    "../_esy/default/build/default/.ppx/ppx_42/ppx.exe --as-ppx"
   ],
 ```
 

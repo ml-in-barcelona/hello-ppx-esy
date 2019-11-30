@@ -1,6 +1,8 @@
+# Using `ppx_42`: Native example
+
 You can see an example of usage in a native project in this folder.
 
-The most relevant point is the `(preprocess (pps my_ppx_lib))` stanza in `dune` file, that is pointing to the ppx library.
+The most relevant point is the `(preprocess (pps ppx_42))` stanza in `dune` file, that is pointing to the ppx library.
 
 To compile the example, run from this folder:
 

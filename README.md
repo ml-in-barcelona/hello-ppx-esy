@@ -1,13 +1,13 @@
 # hello-ppx-esy
 
-A project that includes the minimum configuration for a [ppx](https://blog.hackages.io/reasonml-ppx-8ecd663d5640) project using Reason and [Esy](https://github.com/esy-ocaml/esy).
+A project that includes the minimum configuration for a [ppx](https://blog.hackages.io/reasonml-ppx-8ecd663d5640) called `ppx_42`, a project that uses Reason and [Esy](https://github.com/esy-ocaml/esy).
 
-It implements a very basic ppx that transforms the `[%test]` extension into the number literal `42`.
+`ppx_42` implements a very basic ppx that transforms the `[%gimme]` extension into the number literal `42`.
 
 So, the code:
 
 ```reason
-let fourtyTwo = string_of_int([%test]);
+let fourtyTwo = string_of_int([%gimme]);
 ```
 
 Is transformed into:
@@ -30,7 +30,7 @@ Then build the project dependencies along with the project itself:
 
     % esy build
 
-After building, you should see an executable in `_esy/default/build/default/.ppx/my_ppx_lib/ppx.exe`.
+After building, you should see an executable in `_esy/default/build/default/.ppx/ppx_42/ppx.exe`.
 This will be the binary used by BuckleScript in the example below.
 
 ## Examples

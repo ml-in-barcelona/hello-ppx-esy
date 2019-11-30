@@ -4,11 +4,11 @@
   "description": "Reason workflow with Esy",
   "license": "MIT",
   "esy": {
-    "build": "refmterr dune build -p my_ppx_lib",
+    "build": "refmterr dune build -p ppx_42",
     "NOTE": "Optional release Section. Customizes result of `esy release`",
     "release": {
       "releasedBinaries": [
-        "my_ppx_lib.exe"
+        "ppx_42.exe"
       ],
       "deleteFromBinaryRelease": [
         "*esy_ocaml_*",
