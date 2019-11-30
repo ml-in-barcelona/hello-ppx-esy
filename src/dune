@@ -1,6 +1,6 @@
 (library
-  (name test_ppx)
-  (public_name test_ppx)
+  (name my_ppx_lib)
+  (public_name my_ppx_lib)
   (libraries ocaml-migrate-parsetree)
   (kind ppx_rewriter)
 )
