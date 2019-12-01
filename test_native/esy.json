@@ -1,0 +1,22 @@
+{
+  "name": "test_native",
+  "version": "0.0.1",
+  "license": "MIT",
+  "esy": {
+    "build": [
+      "dune build -p my_native_app"
+    ]
+  },
+  "dependencies": {
+    "ppx_42": "*",
+    "ocaml": "~4.6.1000",
+    "@opam/dune": "*",
+    "@opam/reason": "*"
+  },
+  "devDependencies": {
+    "@opam/merlin": "*"
+  },
+  "resolutions": {
+    "ppx_42": "link-dev:.."
+  }
+}

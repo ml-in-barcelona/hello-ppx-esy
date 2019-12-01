@@ -16,28 +16,21 @@ Is transformed into:
 let fourtyTwo = string_of_int(42);
 ```
 
-## Usage
+## Files and folders
 
-You need Esy, you can install the beta using [npm](https://nodejs.org/en/download/):
+The example contains a couple of different targets that will be handled by dune (an OCaml build system)
+to use the ppx in different projects:
 
-    % npm install -g esy@latest
+- The library: located under `lib` folder. It is used directly by native projects, and indirectly by BuckleScript projects
+- The standalone binary: BuckleScript does not provide a way to compose multiple ppxs together, so each ppx gets called individually, getting a serialized version of the AST, using the `-ppx` compiler flag behind the scenes. This can be configured in BuckleScript projects by using the `ppx-flags` key in `bsconfig.json` (see "Examples" section below).
 
-Then you can install the project dependencies using:
-
-    % esy install
-
-Then build the project dependencies along with the project itself:
-
-    % esy build
-
-After building, you should see an executable in `_esy/default/build/default/.ppx/ppx_42/ppx.exe`.
-This will be the binary used by BuckleScript in the example below.
+For this reason, `ppx_42` exposes an executable that can be consumed by BuckleScript projects.
 
 ## Examples
 
 The repo contains a couple of demo examples that show one way to consume the ppx from both BuckleScript and native environments.
 
-Check the readmes on each folder to read information about them:
+Check the readmes on each example folder:
 
-- [BuckleScript example](example-bs/README.md)
-- [Native example](example-native/README.md)
+- [BuckleScript](test_bs/README.md)
+- [Native](test_native/README.md)
