@@ -1,0 +1,5 @@
+(executable
+  (name Main)
+  (public_name my_native_app.exe)
+  (preprocess (pps ppx_42.lib))
+)

@@ -1,36 +1,17 @@
 {
-  "name": "hello-ppx-esy",
+  "name": "ppx_42",
   "version": "0.1.0",
-  "description": "Reason workflow with Esy",
-  "license": "MIT",
+  "description": "A tiny ppx for learning purposes",
   "esy": {
-    "build": "refmterr dune build -p ppx_42",
-    "NOTE": "Optional release Section. Customizes result of `esy release`",
-    "release": {
-      "releasedBinaries": [
-        "ppx_42.exe"
-      ],
-      "deleteFromBinaryRelease": [
-        "*esy_ocaml_*",
-        "*refmterr-*",
-        "ocaml-*"
-      ]
-    }
+    "build": "dune build -p #{self.name}"
   },
   "dependencies": {
+    "@opam/ocaml-migrate-parsetree": "*",
+    "ocaml": "~4.6.1000",
     "@opam/dune": "*",
-    "@opam/ocaml-migrate-parsetree": "^1.0.11",
-    "@esy-ocaml/reason": "*",
-    "refmterr": "*",
-    "ocaml": "~4.6.1000"
-  },
-  "resolutions": {
-    "@esy-ocaml/esy-installer": "0.0.1",
-    "@opam/menhir": "20171013",
-    "@opam/re": "1.8.0"
+    "@opam/reason": "*"
   },
   "devDependencies": {
-    "@esy-ocaml/merlin": "*",
-    "ocaml": "~4.6.1000"
+    "@opam/merlin": "*"
   }
 }

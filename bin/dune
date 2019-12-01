@@ -1,0 +1,6 @@
+(executable
+  (name Bin)
+  (public_name ppx_42)
+  (libraries ppx_42.lib)
+  (ocamlopt_flags ( -linkall ))
+)
