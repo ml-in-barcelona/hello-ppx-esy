@@ -27,7 +27,7 @@ jobs:
           node-version: ${{ matrix.node-version }}
       - name: Install esy
         run: npm install -g esy@0.5.8
-      - name: '[Cache] calculate esy store path (win)'
+      - name: 'Get esy store path (win)'
         id: print_esy_cache_win
         if: matrix.os == 'windows-latest'
         run: |
@@ -37,7 +37,7 @@ jobs:
           # This will be exposed as an step var esy_cache_path
           echo "##[set-output name=esy_cache_path;]$THE_ESY__CACHE_INSTALL_PATH"
         shell: bash
-      - name: '[Cache] calculate esy store path (non-win)'
+      - name: 'Get esy store path (non-win)'
         id: print_esy_cache_non_win
         if: matrix.os != 'windows-latest'
         run: |
@@ -53,14 +53,14 @@ jobs:
           # This will be exposed as an step var esy_cache_path
           echo "##[set-output name=esy_cache_path;]$THE_ESY__CACHE_INSTALL_PATH"
         shell: bash
-      - name: '[Cache] Maybe restore esy cache (win)'
+      - name: 'Maybe restore esy cache (win)'
         id: esy-cache-win
         if: matrix.os == 'windows-latest'
         uses: actions/cache@v1
         with:
           path: ${{ steps.print_esy_cache_win.outputs.esy_cache_path }}
           key: v1-esy-${{ matrix.os }}-${{ hashFiles('**\index.json') }}
-      - name: '[Cache] Maybe restore esy cache (non-win)'
+      - name: 'Maybe restore esy cache (non-win)'
         id: esy-cache-non-win
         if: matrix.os != 'windows-latest'
         uses: actions/cache@v1
@@ -71,15 +71,20 @@ jobs:
         run: |
           esy install 
           esy build
-      - name: (debug) Print esy build
+      - name: 'Print esy binary path'
+        id: print_esy_binary_path
         run: |
-          cd _esy && ls -la &&
-          cd default && ls -la &&
-          cd build && ls -la &&
-          cd default && ls -la &&
-          cd bin && ls -la
+          ESY__BINARY_PATH=$(esy x which ppx_42)
+          echo "ESY__BINARY_PATH: $ESY__BINARY_PATH"
+          # This will be exposed as an step var esy_cache_path
+          echo "##[set-output name=esy_binary_path;]$ESY__BINARY_PATH"
         shell: bash
-      
+      - name: Upload artifacts ${{ matrix.os }}
+        uses: actions/upload-artifact@master
+        with:
+          name: ${{ matrix.os }}
+          path: ${{ steps.print_esy_binary_path.outputs.esy_binary_path }}
+            
   publish:
     if: github.event_name != 'pull_request'
     needs: test_and_build
@@ -92,11 +97,6 @@ jobs:
           node-version: "12.x"
           registry-url: "https://registry.npmjs.org"
 
-      # - name: Upload artifacts ${{ matrix.os }}
-      #   uses: actions/upload-artifact@master
-      #   with:
-      #     name: ${{ matrix.os }}
-      #     path: _esy/default/build/default/bin/Bin.exe
       - name: Download linux artifacts
         uses: actions/download-artifact@master
         with:
