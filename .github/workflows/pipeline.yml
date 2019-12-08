@@ -17,7 +17,7 @@ jobs:
     strategy:
       matrix:
         node-version: [12.x]
-        os: [windows-latest]
+        os: [ubuntu-latest, windows-latest, macOS-latest]
 
     steps:
       - uses: actions/checkout@v1
@@ -31,15 +31,6 @@ jobs:
         id: print_esy_cache_win
         if: matrix.os == 'windows-latest'
         run: |
-          # COMPUTE THE ESY INSTALL CACHE LOCATION AHEAD OF TIME
-          # Note: This will need to change when upgrading esy version
-          # that reenables long paths on windows.
-          DESIRED_LEN="33"
-          HOME_ESY3="$HOME/.esy/3"
-          HOME_ESY3_LEN=${#HOME_ESY3}
-          NUM_UNDERS=$(echo "$(($DESIRED_LEN-$HOME_ESY3_LEN))")
-          UNDERS=$(printf "%-${NUM_UNDERS}s" "_")
-          UNDERS="${UNDERS// /_}"
           THE_ESY__CACHE_INSTALL_PATH=$HOME/.esy/3_/i
           THE_ESY__CACHE_INSTALL_PATH=$( cygpath --mixed --absolute "$THE_ESY__CACHE_INSTALL_PATH")
           echo "THE_ESY__CACHE_INSTALL_PATH: $THE_ESY__CACHE_INSTALL_PATH"
@@ -79,10 +70,7 @@ jobs:
       - name: esy install and build
         run: |
           esy install 
-          # esy build
-      - name: (debug) Print esy cache contents
-        run: cd "$HOME/.esy" && ls -la && cd 3_ && ls -la && cd i && ls -la && cd "$HOME"
-        shell: bash
+          esy build
       
   publish:
     if: github.event_name != 'pull_request'
