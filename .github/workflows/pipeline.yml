@@ -81,11 +81,6 @@ jobs:
         run: |
           esy install 
           esy build
-      - name: Upload artifacts ${{ matrix.os }}
-        uses: actions/upload-artifact@master
-        with:
-          name: ${{ matrix.os }}
-          path: _esy/default/build/default/bin/Bin.exe
 
   publish:
     if: github.event_name != 'pull_request'
@@ -99,6 +94,11 @@ jobs:
           node-version: "12.x"
           registry-url: "https://registry.npmjs.org"
 
+      # - name: Upload artifacts ${{ matrix.os }}
+      #   uses: actions/upload-artifact@master
+      #   with:
+      #     name: ${{ matrix.os }}
+      #     path: _esy/default/build/default/bin/Bin.exe
       - name: Download linux artifacts
         uses: actions/download-artifact@master
         with:
