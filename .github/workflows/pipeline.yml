@@ -12,6 +12,7 @@ on:
 
 jobs:
   test_and_build:
+    id: test_and_build
     name: Test on node ${{ matrix.node_version }} and ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
     strategy:
@@ -112,7 +113,6 @@ jobs:
 
   publish:
     if: github.event_name != 'pull_request'
-    needs: test_and_build
     name: Publish
     runs-on: ubuntu-latest
     steps:
