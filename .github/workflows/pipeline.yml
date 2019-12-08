@@ -71,6 +71,14 @@ jobs:
         run: |
           esy install 
           esy build
+      - name: (debug) Print esy build
+        run: |
+          cd _esy && ls -la &&
+          cd default && ls -la &&
+          cd build && ls -la &&
+          cd default && ls -la &&
+          cd bin && ls -la
+        shell: bash
       
   publish:
     if: github.event_name != 'pull_request'
