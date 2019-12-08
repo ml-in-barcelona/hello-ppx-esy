@@ -98,13 +98,13 @@ jobs:
           echo "##[set-output name=esy_binary_path;]$ESY__BINARY_PATH"
         shell: bash
       - name: Upload artifacts ${{ matrix.os }} (win)
-        if: matrix.os == 'windows-latest'
+        if: matrix.os == 'windows-latest' && github.event_name != 'pull_request'
         uses: actions/upload-artifact@master
         with:
           name: ${{ matrix.os }}
           path: ${{ steps.print_esy_binary_path_win.outputs.esy_binary_path }}
       - name: Upload artifacts ${{ matrix.os }} (non-win)
-        if: matrix.os != 'windows-latest'
+        if: matrix.os != 'windows-latest' && github.event_name != 'pull_request'
         uses: actions/upload-artifact@master
         with:
           name: ${{ matrix.os }}
@@ -143,9 +143,9 @@ jobs:
       - name: Move artifacts
         run: |
           mkdir -p bin
-          mv binaries/darwin/bin.exe bin/ppx_42-darwin-x64.exe
-          mv binaries/windows/bin.exe bin/ppx_42-win-x64.exe
-          mv binaries/linux/bin.exe bin/ppx_42-linux-x64.exe
+          mv binaries/darwin/ppx_42 bin/ppx_42-darwin-x64.exe
+          mv binaries/windows/ppx_42.exe bin/ppx_42-win-x64.exe
+          mv binaries/linux/ppx_42 bin/ppx_42-linux-x64.exe
 
       - name: Publish
         run: npm publish
