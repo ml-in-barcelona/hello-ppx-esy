@@ -47,14 +47,14 @@ jobs:
           echo "##vso[task.setvariable variable=esy__cache_install_path]$THE_ESY__CACHE_INSTALL_PATH"
         shell: bash
       - name: Try to restore dependencies cache
-        id: esy-cache
+        id: esy-cache-win
         if: matrix.os == 'windows-latest'
         uses: actions/cache@v1
         with:
           path: $(ESY__CACHE_INSTALL_PATH)
           key: v1-esy-${{ matrix.os }}-${{ hashFiles('**\index.json') }}
       - name: Try to restore dependencies cache
-        id: esy-cache
+        id: esy-cache-non-win
         if: matrix.os != 'windows-latest'
         uses: actions/cache@v1
         with:
