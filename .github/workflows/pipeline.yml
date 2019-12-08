@@ -36,6 +36,7 @@ jobs:
           NUM_UNDERS=$(echo "$(($DESIRED_LEN-$HOME_ESY3_LEN))")
           UNDERS=$(printf "%-${NUM_UNDERS}s" "_")
           UNDERS="${UNDERS// /_}"
+          THE_ESY__CACHE_INSTALL_PATH=${HOME_ESY3}${UNDERS}/i
           THE_ESY__CACHE_INSTALL_PATH=$( cygpath --mixed --absolute "$THE_ESY__CACHE_INSTALL_PATH")
           echo "THE_ESY__CACHE_INSTALL_PATH: $THE_ESY__CACHE_INSTALL_PATH"
           # This will be exposed as an step var esy_cache_path
