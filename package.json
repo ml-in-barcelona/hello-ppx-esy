@@ -1,17 +1,14 @@
 {
-  "name": "ppx_42",
+  "name": "@jchavarri/ppx_42",
   "version": "0.1.0",
   "description": "A tiny ppx for learning purposes",
-  "esy": {
-    "build": "dune build -p #{self.name}"
+  "repository": "https://github.com/jchavarri/hello-ppx-esy",
+  "author": "Javier Chávarri <javier.chavarri@gmail.com>",
+  "license": "MIT",
+  "scripts": {
+    "postinstall": "node ./copyPlatformBinaryInPlace.js"
   },
-  "dependencies": {
-    "@opam/ocaml-migrate-parsetree": "*",
-    "ocaml": "~4.6.1000",
-    "@opam/dune": "*",
-    "@opam/reason": "*"
-  },
-  "devDependencies": {
-    "@opam/merlin": "*"
+  "publishConfig": {
+    "access": "public"
   }
 }
