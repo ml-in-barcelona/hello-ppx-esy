@@ -25,22 +25,6 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: ${{ matrix.node-version }}
-      - name: 'Restore npm cache (win)'
-        if: matrix.os == 'windows-latest'
-        uses: actions/cache@v1
-        with:
-          path: ~\AppData\Roaming\npm-cache
-          key: ${{ matrix.os }}-node-${{ hashFiles('**\package-lock.json') }}
-          restore-keys: |
-            ${{ matrix.os }}-node-
-      - name: 'Restore npm cache (non-win)'
-        if: matrix.os != 'windows-latest'
-        uses: actions/cache@v1
-        with:
-          path: ~/.npm
-          key: ${{ matrix.os }}-node-${{ hashFiles('**/package-lock.json') }}
-          restore-keys: |
-            ${{ matrix.os }}-node-
       - name: Install esy
         run: npm install -g esy@0.5.8
       - name: 'Get esy store path (win)'
