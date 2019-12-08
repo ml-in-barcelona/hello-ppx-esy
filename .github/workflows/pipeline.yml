@@ -75,6 +75,7 @@ jobs:
         id: print_esy_binary_path
         run: |
           ESY__BINARY_PATH=$(esy x which ppx_42)
+          ESY__BINARY_PATH=$( cygpath --mixed --absolute "$ESY__BINARY_PATH")
           echo "ESY__BINARY_PATH: $ESY__BINARY_PATH"
           # This will be exposed as an step var esy_cache_path
           echo "##[set-output name=esy_binary_path;]$ESY__BINARY_PATH"
