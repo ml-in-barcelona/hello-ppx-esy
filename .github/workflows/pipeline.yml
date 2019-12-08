@@ -75,7 +75,8 @@ jobs:
           s=$(pwd); d=$(dirname $(esy x which ppx_42));
           while [ "${d#$s/}" == "${d}" ]
           do s=$(dirname $s);b="../${b}"; done; 
-          ESY__BINARY_PATH=${b}${d#$s/}/ppx_42
+          ESY__BINARY_PATH=${b}${d#$s/}/ppx_42.exe
+          echo "esy x which ppx_42: $(esy x which ppx_42)"
           echo "ESY__BINARY_PATH: $ESY__BINARY_PATH"
           echo "##[set-output name=esy_binary_path;]$ESY__BINARY_PATH"
         shell: bash
