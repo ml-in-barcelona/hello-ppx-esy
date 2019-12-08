@@ -27,6 +27,7 @@ jobs:
           npm install -g esy@0.5.8
       - name: '[Cache] calculate esy store path (win)'
         id: print_esy_cache_win
+        if: matrix.os == 'windows-latest'
         run: |
           # COMPUTE THE ESY INSTALL CACHE LOCATION AHEAD OF TIME
           # Note: This will need to change when upgrading esy version
@@ -44,6 +45,7 @@ jobs:
         shell: bash
       - name: '[Cache] calculate esy store path (non-win)'
         id: print_esy_cache_non_win
+        if: matrix.os != 'windows-latest'
         run: |
           # COMPUTE THE ESY INSTALL CACHE LOCATION AHEAD OF TIME
           DESIRED_LEN="86"
