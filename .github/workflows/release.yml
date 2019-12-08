@@ -2,6 +2,8 @@ name: ppx_42 release pipeline
 
 on:
   push:
+    branches:
+      - master
     tags:
       - v*
 
