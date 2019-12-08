@@ -85,20 +85,13 @@ jobs:
         run: |
           esy install 
           esy build
-      - name: 'Print esy binary path (win)'
+      - name: 'Print esy binary path'
         id: print_esy_binary_path
-        if: matrix.os == 'windows-latest'
         run: |
-          ESY__BINARY_PATH=$(esy x which ppx_42)
-          ESY__BINARY_PATH=$( cygpath --mixed --absolute "$ESY__BINARY_PATH")
-          echo "ESY__BINARY_PATH: $ESY__BINARY_PATH"
-          echo "##[set-output name=esy_binary_path;]$ESY__BINARY_PATH"
-        shell: bash
-      - name: 'Print esy binary path (non-win)'
-        id: print_esy_binary_path
-        if: matrix.os != 'windows-latest'
-        run: |
-          ESY__BINARY_PATH=$(esy x which ppx_42)
+          s=$(pwd); d=$(dirname $(esy x which ppx_42));
+          while [ "${d#$s/}" == "${d}" ]
+          do s=$(dirname $s);b="../${b}"; done; 
+          ESY__BINARY_PATH=${b}${d#$s/}/ppx_42
           echo "ESY__BINARY_PATH: $ESY__BINARY_PATH"
           echo "##[set-output name=esy_binary_path;]$ESY__BINARY_PATH"
         shell: bash
