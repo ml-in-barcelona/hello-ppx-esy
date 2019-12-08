@@ -1,0 +1,16 @@
+{
+  "name": "ppx_42",
+  "esy": {
+    "build": "dune build -p #{self.name}"
+  },
+  "dependencies": {
+    "@opam/ocaml-migrate-parsetree": "1.5.0",
+    "ocaml": "~4.6.1000",
+    "@opam/dune": "*",
+    "@esy-ocaml/reason": ">= 3.4.0 < 3.6.0"
+  },
+  "devDependencies": {
+    "@opam/merlin": "*",
+    "ocaml": "~4.6.1000"
+  }
+}

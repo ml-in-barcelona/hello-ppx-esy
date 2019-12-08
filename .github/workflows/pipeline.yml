@@ -1,0 +1,153 @@
+name: ppx_42 pipeline
+
+on:
+  push:
+    branches:
+      - master
+    tags:
+      - v*
+  pull_request:
+    branches:
+      - master
+
+jobs:
+  test_and_build:
+    name: Test on node ${{ matrix.node_version }} and ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        node-version: [12.x]
+        os: [ubuntu-latest, windows-latest, macOS-latest]
+
+    steps:
+      - uses: actions/checkout@v1
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node-version }}
+      - name: Install esy
+        run: npm install -g esy@0.5.8
+      - name: 'Get esy store path (win)'
+        id: print_esy_cache_win
+        if: matrix.os == 'windows-latest'
+        run: |
+          THE_ESY__CACHE_INSTALL_PATH=$HOME/.esy/3_/i
+          THE_ESY__CACHE_INSTALL_PATH=$( cygpath --mixed --absolute "$THE_ESY__CACHE_INSTALL_PATH")
+          echo "THE_ESY__CACHE_INSTALL_PATH: $THE_ESY__CACHE_INSTALL_PATH"
+          # This will be exposed as an step var esy_cache_path
+          echo "##[set-output name=esy_cache_path;]$THE_ESY__CACHE_INSTALL_PATH"
+        shell: bash
+      - name: 'Get esy store path (non-win)'
+        id: print_esy_cache_non_win
+        if: matrix.os != 'windows-latest'
+        run: |
+          # COMPUTE THE ESY INSTALL CACHE LOCATION AHEAD OF TIME
+          DESIRED_LEN="86"
+          HOME_ESY3="$HOME/.esy/3"
+          HOME_ESY3_LEN=${#HOME_ESY3}
+          NUM_UNDERS=$(echo "$(($DESIRED_LEN-$HOME_ESY3_LEN))")
+          UNDERS=$(printf "%-${NUM_UNDERS}s" "_")
+          UNDERS="${UNDERS// /_}"
+          THE_ESY__CACHE_INSTALL_PATH=${HOME_ESY3}${UNDERS}/i
+          echo "THE_ESY__CACHE_INSTALL_PATH: $THE_ESY__CACHE_INSTALL_PATH"
+          # This will be exposed as an step var esy_cache_path
+          echo "##[set-output name=esy_cache_path;]$THE_ESY__CACHE_INSTALL_PATH"
+        shell: bash
+      - name: 'Maybe restore esy cache (win)'
+        if: matrix.os == 'windows-latest'
+        uses: actions/cache@v1
+        with:
+          path: ${{ steps.print_esy_cache_win.outputs.esy_cache_path }}
+          key: v1-esy-${{ matrix.os }}-${{ hashFiles('**\index.json') }}
+          restore-keys: |
+            v1-esy-${{ matrix.os }}-
+      - name: 'Maybe restore esy cache (non-win)'
+        if: matrix.os != 'windows-latest'
+        uses: actions/cache@v1
+        with:
+          path: ${{ steps.print_esy_cache_non_win.outputs.esy_cache_path }}
+          key: v1-esy-${{ matrix.os }}-${{ hashFiles('**/index.json') }}
+          restore-keys: |
+            v1-esy-${{ matrix.os }}-
+      - name: esy install and build
+        run: |
+          esy install 
+          esy build
+      - name: 'Print esy binary path (win)'
+        id: print_esy_binary_path_win
+        if: matrix.os == 'windows-latest'
+        run: |
+          # from https://stackoverflow.com/a/24848739/617787
+          s=$(pwd); d=$(dirname $(esy x which ppx_42));
+          while [ "${d#$s/}" == "${d}" ]
+          do s=$(dirname $s);b="../${b}"; done; 
+          ESY__BINARY_PATH=${b}${d#$s/}/ppx_42.exe
+          echo "ESY__BINARY_PATH: $ESY__BINARY_PATH"
+          echo "##[set-output name=esy_binary_path;]$ESY__BINARY_PATH"
+        shell: bash
+      - name: 'Print esy binary path (non-win)'
+        id: print_esy_binary_path_non_win
+        if: matrix.os != 'windows-latest'
+        run: |
+          # from https://stackoverflow.com/a/24848739/617787
+          s=$(pwd); d=$(dirname $(esy x which ppx_42));
+          while [ "${d#$s/}" == "${d}" ]
+          do s=$(dirname $s);b="../${b}"; done; 
+          ESY__BINARY_PATH=${b}${d#$s/}/ppx_42
+          echo "ESY__BINARY_PATH: $ESY__BINARY_PATH"
+          echo "##[set-output name=esy_binary_path;]$ESY__BINARY_PATH"
+        shell: bash
+      - name: Upload artifacts ${{ matrix.os }} (win)
+        if: matrix.os == 'windows-latest' && github.event_name != 'pull_request'
+        uses: actions/upload-artifact@master
+        with:
+          name: ${{ matrix.os }}
+          path: ${{ steps.print_esy_binary_path_win.outputs.esy_binary_path }}
+      - name: Upload artifacts ${{ matrix.os }} (non-win)
+        if: matrix.os != 'windows-latest' && github.event_name != 'pull_request'
+        uses: actions/upload-artifact@master
+        with:
+          name: ${{ matrix.os }}
+          path: ${{ steps.print_esy_binary_path_non_win.outputs.esy_binary_path }}
+
+  publish:
+    if: github.event_name != 'pull_request'
+    needs: test_and_build
+    name: Publish
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+      - uses: actions/setup-node@v1
+        with:
+          node-version: "12.x"
+          registry-url: "https://registry.npmjs.org"
+
+      - name: Download linux artifacts
+        uses: actions/download-artifact@master
+        with:
+          name: ubuntu-latest
+          path: binaries/linux
+
+      - name: Download macOS artifacts
+        uses: actions/download-artifact@master
+        with:
+          name: macOS-latest
+          path: binaries/darwin
+
+      - name: Download windows artifacts
+        uses: actions/download-artifact@master
+        with:
+          name: windows-latest
+          path: binaries/windows
+
+      - name: Move artifacts
+        run: |
+          mkdir -p bin
+          mv binaries/darwin/ppx_42 bin/ppx_42-darwin-x64.exe
+          mv binaries/windows/ppx_42.exe bin/ppx_42-win-x64.exe
+          mv binaries/linux/ppx_42 bin/ppx_42-linux-x64.exe
+
+      - name: Publish
+        run: npm publish
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}
