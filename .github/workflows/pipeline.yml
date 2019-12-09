@@ -32,7 +32,7 @@ jobs:
       - uses: actions/cache@v1
         with:
           path: ${{ steps.npm-cache.outputs.dir }}
-          key: ${{ matrix.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          key: ${{ matrix.os }}-node-${{ hashFiles('${{ steps.npm-cache.outputs.dir  }}/**/package-lock.json') }}
           restore-keys: |
             ${{ matrix.os }}-node-
       - name: 'Get esy store path (win)'
