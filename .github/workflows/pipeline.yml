@@ -29,11 +29,11 @@ jobs:
         id: print_esy_cache
         shell: bash
         run: |
+          # COMPUTE THE ESY INSTALL CACHE LOCATION AHEAD OF TIME
           if [ "${{ matrix.os }}" == "windows-latest" ]; then
             THE_ESY__CACHE_INSTALL_PATH=$HOME/.esy/3_/i
             THE_ESY__CACHE_INSTALL_PATH=$( cygpath --mixed --absolute "$THE_ESY__CACHE_INSTALL_PATH")
           else
-            # COMPUTE THE ESY INSTALL CACHE LOCATION AHEAD OF TIME
             DESIRED_LEN="86"
             HOME_ESY3="$HOME/.esy/3"
             HOME_ESY3_LEN=${#HOME_ESY3}
@@ -43,7 +43,6 @@ jobs:
             THE_ESY__CACHE_INSTALL_PATH=${HOME_ESY3}${UNDERS}/i  
           fi
           echo "THE_ESY__CACHE_INSTALL_PATH: $THE_ESY__CACHE_INSTALL_PATH"
-          # This will be exposed as an step var esy_cache_path
           echo "##[set-output name=esy_cache_path;]$THE_ESY__CACHE_INSTALL_PATH"
       - name: 'Maybe restore esy cache'
         uses: actions/cache@v1
@@ -56,42 +55,27 @@ jobs:
         run: |
           esy install 
           esy build
-      - name: 'Print esy binary path (win)'
-        id: print_esy_binary_path_win
-        if: matrix.os == 'windows-latest'
+      - name: 'Print esy binary path'
+        id: print_esy_binary_path
+        shell: bash
         run: |
           # from https://stackoverflow.com/a/24848739/617787
           s=$(pwd); d=$(dirname $(esy x which ppx_42));
           while [ "${d#$s/}" == "${d}" ]
           do s=$(dirname $s);b="../${b}"; done; 
-          ESY__BINARY_PATH=${b}${d#$s/}/ppx_42.exe
+          if [ "${{ matrix.os }}" == "windows-latest" ]; then
+            ESY__BINARY_PATH=${b}${d#$s/}/ppx_42.exe
+          else
+            ESY__BINARY_PATH=${b}${d#$s/}/ppx_42
+          fi
           echo "ESY__BINARY_PATH: $ESY__BINARY_PATH"
           echo "##[set-output name=esy_binary_path;]$ESY__BINARY_PATH"
-        shell: bash
-      - name: 'Print esy binary path (non-win)'
-        id: print_esy_binary_path_non_win
-        if: matrix.os != 'windows-latest'
-        run: |
-          # from https://stackoverflow.com/a/24848739/617787
-          s=$(pwd); d=$(dirname $(esy x which ppx_42));
-          while [ "${d#$s/}" == "${d}" ]
-          do s=$(dirname $s);b="../${b}"; done; 
-          ESY__BINARY_PATH=${b}${d#$s/}/ppx_42
-          echo "ESY__BINARY_PATH: $ESY__BINARY_PATH"
-          echo "##[set-output name=esy_binary_path;]$ESY__BINARY_PATH"
-        shell: bash
-      - name: Upload artifacts ${{ matrix.os }} (win)
-        if: matrix.os == 'windows-latest' && github.event_name != 'pull_request'
+      - name: Upload artifacts ${{ matrix.os }}
+        if: github.event_name != 'pull_request'
         uses: actions/upload-artifact@master
         with:
           name: ${{ matrix.os }}
-          path: ${{ steps.print_esy_binary_path_win.outputs.esy_binary_path }}
-      - name: Upload artifacts ${{ matrix.os }} (non-win)
-        if: matrix.os != 'windows-latest' && github.event_name != 'pull_request'
-        uses: actions/upload-artifact@master
-        with:
-          name: ${{ matrix.os }}
-          path: ${{ steps.print_esy_binary_path_non_win.outputs.esy_binary_path }}
+          path: ${{ steps.print_esy_binary_path.outputs.esy_binary_path }}
 
   publish:
     needs: test_and_build
