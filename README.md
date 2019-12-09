@@ -1,5 +1,7 @@
 # hello-ppx-esy
 
+![](https://github.com/jchavarri/hello-ppx-esy/workflows/ppx_42%20pipeline/badge.svg)
+
 A project that includes the minimum configuration for a [ppx](https://blog.hackages.io/reasonml-ppx-8ecd663d5640) called `ppx_42`, a project that uses Reason and [Esy](https://github.com/esy-ocaml/esy).
 
 `ppx_42` implements a very basic ppx that transforms the `[%gimme]` extension into the number literal `42`.
