@@ -24,23 +24,17 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
       - name: Install esy
-        run: npm install esy@0.5.8
+        run: npm install -g esy@0.5.8
       - name: Get npm cache directory
         id: npm-cache
         run: |
-          echo "::set-output name=dir::$(npm config get cache)"
-      - name: Get npm cache pattern
-        id: npm-cache-pattern
-        run: |
-          cd "$(npm config get cache)" && ls -la && cd -
-          echo "BLLA: $(npm config get cache)/**/package-lock.json"
-          echo "::set-output name=dir::$(npm config get cache)/**/package-lock.json"
+          echo "::set-output name=dir::$(npm config get prefix)"
       - uses: actions/cache@v1
         with:
           path: ${{ steps.npm-cache.outputs.dir }}
-          key: ${{ matrix.os }}-node-${{ hashFiles(steps.npm-cache-pattern.outputs.dir) }}
+          key: ${{ matrix.os }}-nodeglobal-esy@0.5.8
           restore-keys: |
-            ${{ matrix.os }}-node-
+            ${{ matrix.os }}-nodeglobal-
       - name: 'Get esy store path (win)'
         id: print_esy_cache_win
         if: matrix.os == 'windows-latest'
