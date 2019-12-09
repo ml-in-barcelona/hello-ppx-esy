@@ -2,8 +2,6 @@ name: ppx_42 pipeline
 
 on:
   push:
-    branches:
-      - master
     tags:
       - v*
   pull_request:
@@ -112,6 +110,7 @@ jobs:
 
   publish:
     needs: test_and_build
+    if: github.event_name != 'pull_request'
     name: Publish
     runs-on: ubuntu-latest
     steps:
