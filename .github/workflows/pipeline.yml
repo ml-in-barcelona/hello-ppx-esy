@@ -111,7 +111,7 @@ jobs:
           path: ${{ steps.print_esy_binary_path_non_win.outputs.esy_binary_path }}
 
   publish:
-    if: github.event_name != 'pull_request'
+    needs: test_and_build
     name: Publish
     runs-on: ubuntu-latest
     steps:
@@ -122,24 +122,28 @@ jobs:
           registry-url: "https://registry.npmjs.org"
 
       - name: Download linux artifacts
+        if: github.event_name != 'pull_request' && (startsWith(github.ref, 'refs/tags/') || github.ref == 'refs/heads/master') && success()
         uses: actions/download-artifact@master
         with:
           name: ubuntu-latest
           path: binaries/linux
 
       - name: Download macOS artifacts
+        if: github.event_name != 'pull_request' && (startsWith(github.ref, 'refs/tags/') || github.ref == 'refs/heads/master') && success()
         uses: actions/download-artifact@master
         with:
           name: macOS-latest
           path: binaries/darwin
 
       - name: Download windows artifacts
+        if: github.event_name != 'pull_request' && (startsWith(github.ref, 'refs/tags/') || github.ref == 'refs/heads/master') && success()
         uses: actions/download-artifact@master
         with:
           name: windows-latest
           path: binaries/windows
 
       - name: Move artifacts
+        if: github.event_name != 'pull_request' && (startsWith(github.ref, 'refs/tags/') || github.ref == 'refs/heads/master') && success()
         run: |
           mkdir -p bin
           mv binaries/darwin/ppx_42 bin/ppx_42-darwin-x64.exe
@@ -147,6 +151,7 @@ jobs:
           mv binaries/linux/ppx_42 bin/ppx_42-linux-x64.exe
 
       - name: Publish
+        if: github.event_name != 'pull_request' && (startsWith(github.ref, 'refs/tags/') || github.ref == 'refs/heads/master') && success()
         run: npm publish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}

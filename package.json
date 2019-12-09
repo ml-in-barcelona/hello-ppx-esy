@@ -1,6 +1,6 @@
 {
   "name": "@jchavarri/ppx_42",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "A tiny ppx for learning purposes",
   "repository": "https://github.com/jchavarri/hello-ppx-esy",
   "author": "Javier Chávarri <javier.chavarri@gmail.com>",
