@@ -23,6 +23,10 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: ${{ matrix.node-version }}
+      - name: Get npm cache directory
+        id: npm-cache
+        run: |
+          echo "::set-output name=dir::$(npm config get prefix)"
       - name: 'Maybe restore npm cache'
         uses: actions/cache@v1
         with:
@@ -32,10 +36,6 @@ jobs:
             ${{ matrix.os }}-nodeglobal-
       - name: Install esy
         run: npm install -g esy@0.5.8
-      - name: Get npm cache directory
-        id: npm-cache
-        run: |
-          echo "::set-output name=dir::$(npm config get prefix)"
       - name: 'Get esy store path (win)'
         id: print_esy_cache_win
         if: matrix.os == 'windows-latest'
