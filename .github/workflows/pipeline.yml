@@ -29,10 +29,15 @@ jobs:
         id: npm-cache
         run: |
           echo "::set-output name=dir::$(npm config get cache)"
+      - name: Get npm cache pattern
+        id: npm-cache-pattern
+        run: |
+          echo "BLLA: $(npm config get cache)/**/package-lock.json"
+          echo "::set-output name=dir::$(npm config get cache)/**/package-lock.json"
       - uses: actions/cache@v1
         with:
           path: ${{ steps.npm-cache.outputs.dir }}
-          key: ${{ matrix.os }}-node-${{ hashFiles(steps.npm-cache.outputs.dir'/**/package-lock.json') }}
+          key: ${{ matrix.os }}-node-${{ hashFiles(steps.npm-cache-pattern.outputs.dir) }}
           restore-keys: |
             ${{ matrix.os }}-node-
       - name: 'Get esy store path (win)'
