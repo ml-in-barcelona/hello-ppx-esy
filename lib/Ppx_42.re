@@ -1,17 +1,26 @@
 open Migrate_parsetree;
-open Ast_406;
-open Ast_mapper;
-open Parsetree;
+let mapper = (_, _) =>
+  Ast_408.(
+    Ast_mapper.(
+      Parsetree.(
+        Asttypes.{
+          ...default_mapper,
+          expr: (mapper, e) => {
+            switch (e.pexp_desc) {
+            /* If the expression is [%gimme] */
+            | Pexp_extension(({txt: "gimme", _}, _payload)) =>
+              /* Then replace by 42 */
+              %expr
+              42
+            | _ => default_mapper.expr(mapper, e)
+            };
+          },
+        }
+      )
+    )
+  );
 
-let expr = (mapper, e) =>
-  switch (e.pexp_desc) {
-  /* If the expression is [%gimme] */
-  | Pexp_extension(({txt: "gimme", _}, _payload)) =>
-    /* Then replace by 42 */
-    Ast_helper.Exp.constant(Pconst_integer("42", None))
-  | _ => default_mapper.expr(mapper, e)
-  };
-
-let mapper = (_, _) => {...default_mapper, expr};
-
-let () = Driver.register(~name="ppx_42", Versions.ocaml_406, mapper);
+let () =
+  Migrate_parsetree.(
+    Driver.register(~name="ppx_42", Versions.ocaml_408, mapper)
+  );

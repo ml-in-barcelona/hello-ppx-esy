@@ -1,16 +1,34 @@
 {
   "name": "ppx_42",
   "esy": {
-    "build": "dune build -p #{self.name}"
+    "build": [["dune", "build", "-p", "#{self.name}"]],
+    "buildDev": [
+      [
+        "dune",
+        "build",
+        "--promote-install-files",
+        "--root",
+        ".",
+        "--only-package",
+        "#{self.name}"
+      ]
+    ],
+    "buildsInSource": "_build"
+  },
+  "scripts": {
+    "clean": "dune clean",
+    "format": "dune build @fmt --auto-promote --root .",
+    "release-static": "dune build --root . --only-packages '#{self.name}' --ignore-promoted-rules --no-config --profile release-static"
   },
   "dependencies": {
-    "@opam/ocaml-migrate-parsetree": "1.5.0",
-    "ocaml": "~4.6.1000",
+    "@opam/ocaml-migrate-parsetree": ">=1.6.0",
+    "@opam/ppx_tools_versioned": "5.2.3",
     "@opam/dune": "*",
-    "@esy-ocaml/reason": ">= 3.4.0 < 3.6.0"
+    "@opam/reason": "3.5.2"
   },
   "devDependencies": {
-    "@opam/merlin": "*",
-    "ocaml": "~4.6.1000"
+    "ocaml": "~4.8.0",
+    "@opam/ocamlformat": "0.13.0",
+    "@opam/merlin": "*"
   }
 }
